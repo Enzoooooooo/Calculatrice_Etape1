@@ -1,17 +1,40 @@
-    let result = document.getElementById('result');
-
-    function appendSymbol(symbol) {
-        result.value += symbol;
+class Calculator {
+    constructor() {
+        this.result = document.getElementById('result');
+        this.history = [];
+        this.previousExpression = '';
     }
 
-    function clearResult() {
-        result.value = '';
+    appendSymbol(symbol) {
+        this.result.value += symbol;
+        this.history.push(symbol);
     }
 
-    function calculate() {
+    clearResult() {
+        this.result.value = '';
+        this.history = [];
+    }
+
+    calculate() {
         try {
-            result.value = eval(result.value);
+            this.previousExpression = this.result.value;
+            this.result.value = eval(this.result.value);
+            this.history.push('=');
         } catch (error) {
-            result.value = 'Error';
+            this.result.value = 'Error';
         }
     }
+
+    undo() {
+        if (this.history.length > 0) {
+            const lastAction = this.history.pop();
+            if (lastAction === '=') {
+                this.result.value = this.previousExpression;
+            } else {
+                this.result.value = this.result.value.slice(0, -1);
+            }
+        }
+    }
+}
+
+const calc = new Calculator();
